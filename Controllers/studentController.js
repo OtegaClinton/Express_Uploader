@@ -5,6 +5,16 @@ const cloudinary = require("../Helpers/cloudinary");
 exports.createStudent = async (req,res)=>{
     try {
         const createStudent = new studentModel(req.body);
+        const file = req.files.profilePicture;
+        const mimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+        if (!mimeTypes.includes(file.mimetype)) {
+            return res.status(400).json({
+                message: 'Invalid file type. Only jpg, jpeg, and png files are allowed.'
+            });
+        }
+
+        
         const cloudProfile = await cloudinary.uploader.upload(req.files.profilePicture.tempFilePath, { folder: "users_dp" }, (error, data) => {
             if (error) {
                 return res.status(400).json({
@@ -12,10 +22,12 @@ exports.createStudent = async (req,res)=>{
                 });
             } else {
                 return res.status(200).json({
-                    message: 'Upload successful',
-                    data
-                });
-            }
+                            message: 'Upload successful',
+                            data
+                        });
+                    
+                    };
+              
         });
 
         createStudent.profilePicture.pictureUrl = cloudProfile.secure_url;
@@ -36,6 +48,7 @@ exports.createStudent = async (req,res)=>{
         
     }
 };
+
 
 
 exports.deleteStudent = async (req,res)=>{
