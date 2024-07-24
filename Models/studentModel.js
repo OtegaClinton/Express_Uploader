@@ -24,6 +24,11 @@ const studentSchema = new mongoose.Schema({
             message: "Gender can only be either Male or Female."
         },
         required: true
+    },
+
+    profilePicture: {
+        pictureId: { type: String },
+        pictureUrl: { type: String},
     }
 }, { timestamps: true });
 

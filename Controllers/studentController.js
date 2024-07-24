@@ -5,6 +5,21 @@ const cloudinary = require("../Helpers/cloudinary");
 exports.createStudent = async (req,res)=>{
     try {
         const createStudent = new studentModel(req.body);
+        const cloudProfile = await cloudinary.uploader.upload(req.files.profilePicture.tempFilePath, { folder: "users_dp" }, (error, data) => {
+            if (error) {
+                return res.status(400).json({
+                    message: error.message
+                });
+            } else {
+                return res.status(200).json({
+                    message: 'Upload successful',
+                    data
+                });
+            }
+        });
+
+        createStudent.profilePicture.pictureUrl = cloudProfile.secure_url;
+        createStudent.profilePicture.pictureId = cloudProfile.public_id;
         
         await createStudent.save();
         
